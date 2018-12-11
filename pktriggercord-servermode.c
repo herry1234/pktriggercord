@@ -30,6 +30,7 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
+#include <netinet/tcp.h>
 #endif
 
 #include <stdio.h>
@@ -138,7 +139,8 @@ void strip(char *s) {
 int servermode_socket(int servermode_timeout) {
     int socket_desc, c , read_size;
     struct sockaddr_in server , client;
-    char client_message[2000];
+    char client_message[1024];
+    char msgs [1024];
     char *arg;
     char buf[2100];
     pslr_handle_t camhandle=NULL;
@@ -208,8 +210,27 @@ int servermode_socket(int servermode_timeout) {
         }
 
         //Receive a message from client
-        while ( (read_size = recv(client_sock , client_message , 2000 , 0)) > 0 ) {
-            client_message[read_size]='\0';
+        while ( (read_size = recv(client_sock , msgs , 1024 , 0)) > 0 ) {
+            DPRINT("Another iteration %d < %s ->", strlen(msgs), msgs);
+            int pv = 0;
+            int num_cmd = 0;
+            char cmds_buf [10][1024];
+            memset(cmds_buf, 0, sizeof(cmds_buf));
+            for (int i=0; i< strlen(msgs); i++) {
+                char c = msgs[i];
+                if (c == '\n') {
+                    strncpy(cmds_buf[num_cmd++],msgs + pv,i-pv+1);
+                    pv = i+1;
+                } 
+            }
+            memset(msgs,0,sizeof(msgs));
+        DPRINT("Number of cmd in the list : %d\r\n",num_cmd);
+        for(int i=0; i<num_cmd; i++) {
+          DPRINT("NO %d : %s",i, cmds_buf[i]);
+            // client_message[read_size]='\0';
+            // strip( client_message );
+            memset(client_message, 0, sizeof(client_message));
+            strncpy(client_message,cmds_buf[i],strlen(cmds_buf[i]));
             strip( client_message );
             DPRINT(":%s:\n",client_message);
             if ( !strcmp(client_message, "stopserver" ) ) {
@@ -391,6 +412,7 @@ int servermode_socket(int servermode_timeout) {
             } else {
                 write_socket_answer("1 Invalid servermode command\n");
             }
+        }
         }
 
         if (read_size == 0) {
