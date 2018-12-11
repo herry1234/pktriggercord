@@ -12,7 +12,8 @@ LOCAL_SRC_FILES := ../../src/external/js0n/js0n.c \
 	../../pktriggercord-servermode.c \
 	../../pktriggercord-cli.c
 DEFINES 	:= -DANDROID -DVERSION=\"$(VERSION)\" -DPKTDATADIR=\".\"
-LOCAL_CFLAGS  	:= $(DEFINES) -frtti -Isrc/external/js0n -Istlport -g -fPIE
-LOCAL_LDLIBS	:= -llog -lstdc++ -fPIE -pie
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../src/external/js0n
+LOCAL_CFLAGS  	:= $(DEFINES) -frtti -Istlport
+LOCAL_LDLIBS	:= -llog -lstdc++
 
 include $(BUILD_EXECUTABLE)

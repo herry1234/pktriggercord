@@ -36,8 +36,6 @@ gradle.projectsEvaluated {
 
 android {
     compileSdkVersion 26
-    buildToolsVersion "26.0.2"
-
     sourceSets {          
         main {
             manifest.srcFile 'AndroidManifest.xml'
@@ -47,8 +45,16 @@ android {
             renderscript.srcDirs = ['src']
             res.srcDirs = ['res']
             assets.srcDirs = ['assets']
+//            jni.srcDirs = ['/home/herry/workspace/pktriggercord/android/jni']
         }
     }
+    // task buildNative(type: Exec, description: 'Compile JNI source via NDK') {
+    //         copy {
+    //             from "/home/herry/workspace/pktriggercord/android/build/intermediates/ndkBuild/debug/obj/local/armeabi-v7a/pktriggercord-cli"
+    //             into "assets"
+    //         }
+
+    // }
 
     defaultConfig {
         applicationId "info.melda.sala.pktriggercord"
@@ -57,6 +63,11 @@ android {
         versionCode 8405
         versionName "0.84.05"
         setProperty("archivesBaseName", "info.melda.sala.pktriggercord.PkTriggerCord-$versionName" );
+        externalNativeBuild {
+            ndkBuild {
+                targets "pktriggercord-cli"
+            }
+        }
     }
 
     signingConfigs {
@@ -75,11 +86,16 @@ android {
             signingConfig signingConfigs.release
         }
     }
+    externalNativeBuild {
+        ndkBuild {
+            path 'jni/Android.mk'
+        }
+    }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:26.0.2'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:26.0.2'
 }
 
 buildscript {
@@ -90,7 +106,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.3'
+        classpath 'com.android.tools.build:gradle:3.2.1'
     }
 }
 

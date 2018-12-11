@@ -238,11 +238,11 @@ androidver:
 
 androidcommon: androidcli androidver
 	mkdir -p $(ANDROID_DIR)/assets
-	cp $(ANDROID_DIR)/libs/armeabi/pktriggercord-cli $(ANDROID_DIR)/assets
+	cp $(ANDROID_DIR)/libs/armeabi-v7a/pktriggercord-cli $(ANDROID_DIR)/assets
 
 android: androidcommon
 	cd $(ANDROID_DIR) && ./gradlew assembleDebug
-	cp $(ANDROID_DIR)/build/outputs/apk/$(ANDROID_PACKAGE).$(ANDROID_PROJECT_NAME)-$(VERSION)-debug.apk .
+	cp $(ANDROID_DIR)/build/outputs/apk/debug/$(ANDROID_PACKAGE).$(ANDROID_PROJECT_NAME)-$(VERSION)-debug.apk .
 	echo "android build is EXPERIMENTAL. Use it at your own risk"
 
 androidrelease: androidcommon
