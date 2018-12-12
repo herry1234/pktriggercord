@@ -49,6 +49,7 @@ static uint8_t lastbuf[MAX_STATUS_BUF_SIZE];
 static int first = 1;
 static char *jsontext=NULL;
 static int jsonsize;
+bool debug;
 
 static void ipslr_status_diff(uint8_t *buf) {
     int n;
