@@ -42,7 +42,7 @@
 #include <sys/time.h>
 
 #include "pslr.h"
-#include "pktriggercord-servermode.h"
+#include "pktriggercord-grpc-server.h"
 
 #ifdef WIN32
 #define FILE_ACCESS O_WRONLY | O_CREAT | O_TRUNC | O_BINARY
@@ -62,7 +62,13 @@ bool bulb_timer_before=false;
 bool astrotracer_before=false;
 bool need_bulb_new_cleanup=false;
 bool need_one_push_bracketing_cleanup=false;
+ int servermode_grpc(int);
 
+ pslr_handle_t camera_connect( char *model, char *device, int timeout, char *error_message );
+
+ void camera_close(pslr_handle_t camhandle);
+
+ double timeval_diff_sec(struct timeval *t2, struct timeval *t1);
 static struct option const longopts[] = {
     {"exposure_mode", required_argument, NULL, 'm'},
     {"resolution", required_argument, NULL, 'r'},
@@ -778,7 +784,7 @@ int main(int argc, char **argv) {
     if ( servermode ) {
 #ifndef WIN32
         // ignore all the other argument and go to server mode
-        servermode_socket(servermode_timeout);
+        servermode_grpc(servermode_timeout);
         exit(0);
 #else
         fprintf(stderr, "Servermode is not supported in Windows\n");

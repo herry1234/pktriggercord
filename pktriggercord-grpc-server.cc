@@ -56,7 +56,7 @@ extern "C" {
 #include "pslr.h"
 #include "pslr_lens.h"
 }
-
+#include "pktriggercord-grpc-server.h"
 
 using grpc::Server;
 using grpc::ServerBuilder;
@@ -68,7 +68,14 @@ using grpc::Status;
 using pkcamera::Field;
 using pkcamera::CamStatus;
 using pkcamera::PkCamera;
-extern  bool debug;
+
+extern "C" int servermode_grpc(int);
+
+extern "C" pslr_handle_t camera_connect( char *model, char *device, int timeout, char *error_message );
+
+extern "C" void camera_close(pslr_handle_t camhandle);
+
+extern "C" double timeval_diff_sec(struct timeval *t2, struct timeval *t1);
 
 double timeval_diff_sec(struct timeval *t2, struct timeval *t1) {
     //DPRINT("tv2 %ld %ld t1 %ld %ld\n", t2->tv_sec, t2->tv_usec, t1->tv_sec, t1->tv_usec);
@@ -382,7 +389,9 @@ void RunServer() {
   std::cout << "Server listening on " << server_address << std::endl;
   server->Wait();
 }
-int main(int argc, char **argv) {
+
+
+int servermode_grpc(int servermode_timeout) {
     RunServer();
     return 0;
 }

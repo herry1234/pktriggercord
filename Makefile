@@ -13,7 +13,7 @@ CPPLDFLAGS += -L/usr/local/lib `pkg-config --libs protobuf grpc++`\
 else
 CPPLDFLAGS += -L/usr/local/lib `pkg-config --libs protobuf grpc++`\
            -Wl,--no-as-needed -lgrpc++_reflection -Wl,--as-needed\
-           -ldl
+           -ldl -lm
 endif
 
 CFLAGS ?= -O3 -g -Wall -I$(JSONDIR)
@@ -61,7 +61,7 @@ all: srczip rpm win pktriggercord_commandline.html
 cli: pktriggercord-cli
 
 MANS = pktriggercord-cli.1 pktriggercord.1
-SRCOBJNAMES = pslr pslr_enum pslr_scsi pslr_lens pslr_model pktriggercord-servermode
+SRCOBJNAMES = pslr pslr_enum pslr_scsi pslr_lens pslr_model pktriggercord-grpc-server
 OBJS = $(SRCOBJNAMES:=.o) $(JSONDIR)/js0n.o
 WIN_DLLS_DIR=win_dlls
 SOURCE_PACKAGE_FILES = Makefile Changelog COPYING INSTALL BUGS $(MANS) pentax_scsi_protocol.md pentax.rules samsung.rules $(SRCOBJNAMES:=.h) $(SRCOBJNAMES:=.c) $(SRCOBJNAMES:=.cc) pslr_scsi_linux.c pslr_scsi_win.c pslr_scsi_openbsd.c exiftool_pentax_lens.txt pktriggercord.c pktriggercord-cli.c pktriggercord.ui pentax_settings.json $(SPECFILE) android_scsi_sg.h src/
@@ -72,14 +72,12 @@ LOCALMINGW=i686-w64-mingw32
 WINGCC=i686-w64-mingw32-gcc
 WINMINGW=/usr/i686-w64-mingw32/sys-root/mingw
 WINDIR=$(TARDIR)-win
-pktriggercord-grpc-server.o: pktriggercord-grpc-server.cc 
+pktriggercord-grpc-server.o: pk_ctrl.pb.o pk_ctrl.grpc.pb.o pktriggercord-grpc-server.cc 
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS)  $^ -c -o $@
-pktriggercord-grpc-server: pk_ctrl.pb.o pk_ctrl.grpc.pb.o pslr_scsi.o pslr_enum.o  pslr_lens.o pslr_model.o pslr.o src/external/js0n/js0n.o pktriggercord-grpc-server.o
-	$(CXX) $^ $(CPPLDFLAGS) -o $@
 pslr.o: pslr_enum.o pslr_scsi.o pslr.c pslr.h
 
 pktriggercord-cli: pktriggercord-cli.c $(OBJS)
-	$(CC) $(LIN_CFLAGS) $^ -DVERSION='"$(VERSION)"' -o $@ $(LIN_LDFLAGS) -L.
+	$(CC) $(LIN_CFLAGS) $^ -DVERSION='"$(VERSION)"' -o $@ $(CPPLDFLAGS) -L.
 
 pslr_scsi.o: pslr_scsi_win.c pslr_scsi_linux.c pslr_scsi_openbsd.c
 
