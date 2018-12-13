@@ -780,7 +780,7 @@ char *read_json_file(int *jsonsize) {
     int jsonfd = open("pentax_settings.json", O_RDONLY);
     if (jsonfd == -1) {
         // cannot find in the current directory, also checking PKTDATADIR
-        jsonfd = open(PKTDATADIR "/pentax_settings.json", O_RDONLY);
+        jsonfd = open("./pentax_settings.json", O_RDONLY);
         if (jsonfd == -1) {
             fprintf(stderr, "Cannot open pentax_settings.json file\n");
             return NULL;
