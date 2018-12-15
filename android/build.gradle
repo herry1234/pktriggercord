@@ -85,6 +85,10 @@ android {
                  arguments '-Dprotobuf_BUILD_TESTS=OFF'
                  arguments '-Dpkctrl_PROTOBUF_PROTOC_EXECUTABLE=' + protoc
                  arguments '-Dpkctrl_GRPC_CPP_PLUGIN_EXECUTABLE=' + grpc_cpp_plugin
+
+                 targets 'pktriggercord-grpc-server',
+                         'pk_ctrl_proto_lib',
+                         'pktriggercord-pslr'
              }
          }
         ndk.abiFilters 'armeabi-v7a'

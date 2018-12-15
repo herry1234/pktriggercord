@@ -63,10 +63,10 @@ set(PROTO_BASE_DIR ${GRPC_SRC_DIR}/examples/protos)
 android_protobuf_grpc_generate_cpp(
   HELLOWORLD_PROTO_SRCS HELLOWORLD_PROTO_HDRS ${PROTO_BASE_DIR} ${PROTO_BASE_DIR}/pk_ctrl.proto)
 
-add_library(pktriggercord-grpc-server_proto_lib
+add_library(pk_ctrl_proto_lib
   SHARED ${HELLOWORLD_PROTO_HDRS} ${HELLOWORLD_PROTO_SRCS})
 
-target_link_libraries(pktriggercord-grpc-server_proto_lib
+target_link_libraries(pk_ctrl_proto_lib
   grpc++
   libprotobuf
   android
@@ -82,19 +82,18 @@ add_library(pktriggercord-pslr
 
 #add_library(pktriggercord-grpc-server
 #  SHARED src/pktriggercord-grpc-server.cc)
+#
 
 add_executable(pktriggercord-grpc-server
         src/pktriggercord-grpc-server.cc)
-
-target_include_directories(pktriggercord-grpc-server
-  PRIVATE ${HELLOWORLD_PROTO_HEADERS})
+#target_include_directories(pktriggercord-grpc-server
+#  PRIVATE ${HELLOWORLD_PROTO_HEADERS})
 target_link_libraries(pktriggercord-pslr
         log
         )
 target_link_libraries(pktriggercord-grpc-server
-        pktriggercord-grpc-server_proto_lib
+        pk_ctrl_proto_lib
         android
         log
         pktriggercord-pslr
         )
-
