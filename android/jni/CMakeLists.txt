@@ -94,6 +94,6 @@ target_link_libraries(pktriggercord-pslr
 target_link_libraries(pktriggercord-grpc-server
         pk_ctrl_proto_lib
         android
-        log
+        ${log-lib}
         pktriggercord-pslr
         )
